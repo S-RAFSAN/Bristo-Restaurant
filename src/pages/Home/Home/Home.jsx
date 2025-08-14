@@ -1,0 +1,23 @@
+import Banner from "../Banner/Banner";
+import Catagory from "../Catagory/Catagory";
+import Featured from "../Feataured/Featured";
+import PopularMenu from "../PopularMenu/PopularMenu";
+import Testimonials from "../Testimonials/Testimonials";
+import { Helmet } from "react-helmet-async";
+
+const Home = () => {
+    return (
+        <div>
+            <Helmet>
+        <title>Bistro Boss | Home</title>
+      </Helmet>
+            <Banner></Banner>
+            <Catagory></Catagory>
+            <PopularMenu></PopularMenu>
+            <Featured></Featured>
+            <Testimonials></Testimonials>
+        </div>
+    );
+};
+
+export default Home;
