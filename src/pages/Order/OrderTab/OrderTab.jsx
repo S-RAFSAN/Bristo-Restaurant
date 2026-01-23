@@ -12,6 +12,14 @@ const OrderTab = ({ items }) => {
     },
   };
 
+  if (!items || items.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">No items available in this category.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Swiper
