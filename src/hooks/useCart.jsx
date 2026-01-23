@@ -1,28 +1,47 @@
+import { useState, useEffect, useCallback } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
-import useAxiosSecure from './useAxiosSecure';
-import useAuth from './useAuth';
+// Custom event name for cart updates
+const CART_UPDATE_EVENT = 'cartUpdated';
 
 const useCart = () => {
-    const axiosSecure = useAxiosSecure();
-    const {user} = useAuth();
-    const{ data: cart = [], refetch} = useQuery({
-        queryKey: ['cart', user?.email],
-        queryFn: async () => {
-            console.log('Fetching cart for user:', user?.email);
-            const res = await axiosSecure.get(`/cart?email=${user?.email}`);
-            console.log('Cart data received:', res.data);
-            // Filter by email on frontend as backup in case backend doesn't filter properly
-            const filteredCart = res.data.filter(item => item.email === user?.email);
-            console.log('Filtered cart data:', filteredCart);
-            return filteredCart;
-        },
-        enabled: !!user?.email,
-        staleTime: 0, // Always fetch fresh data
-        cacheTime: 0,  // Don't cache the data
-        refetchOnWindowFocus: true,
-        refetchOnMount: true
-    })
+    const [cart, setCart] = useState([]);
+
+    // Load cart from localStorage
+    const loadCart = useCallback(() => {
+        const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        setCart(savedCart);
+        return savedCart;
+    }, []);
+
+    // Refetch function
+    const refetch = useCallback(() => {
+        loadCart();
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new CustomEvent(CART_UPDATE_EVENT));
+    }, [loadCart]);
+
+    // Load cart on mount
+    useEffect(() => {
+        loadCart();
+    }, [loadCart]);
+
+    // Listen for cart updates from other components
+    useEffect(() => {
+        const handleCartUpdate = () => {
+            loadCart();
+        };
+
+        window.addEventListener(CART_UPDATE_EVENT, handleCartUpdate);
+        
+        // Also listen to storage events (for cross-tab updates)
+        window.addEventListener('storage', handleCartUpdate);
+
+        return () => {
+            window.removeEventListener(CART_UPDATE_EVENT, handleCartUpdate);
+            window.removeEventListener('storage', handleCartUpdate);
+        };
+    }, [loadCart]);
+
     return [cart, refetch];
 };
 

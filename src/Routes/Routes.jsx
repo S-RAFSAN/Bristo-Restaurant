@@ -60,15 +60,15 @@ const router = createBrowserRouter([
       //admin routes
       {
         path: 'addItems',  
-        element: <AdminRoutes><AddItems></AddItems></AdminRoutes>,
+        element: <AddItems></AddItems>,
       },
       {
         path: 'manageItems',
-        element: <AdminRoutes><ManageItems></ManageItems></AdminRoutes>,
+        element: <ManageItems></ManageItems>,
       },
       {
         path: 'updateItem/:id',
-        element: <AdminRoutes><UpdateItem></UpdateItem></AdminRoutes>,
+        element: <UpdateItem></UpdateItem>,
         loader: ({params}) => {
           const baseURL = import.meta.env.VITE_API_URL || 
             (import.meta.env.PROD ? "https://bistro-boss-server-virid-three.vercel.app" : "http://localhost:5000");
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'users',
-        element: <AdminRoutes><AllUsers></AllUsers></AdminRoutes>,
+        element: <AllUsers></AllUsers>,
 
       }
     ],

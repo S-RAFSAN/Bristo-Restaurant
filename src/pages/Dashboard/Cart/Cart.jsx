@@ -1,13 +1,12 @@
 import useCart from "../../../hooks/useCart";
 import {FaTrashAlt} from "react-icons/fa";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Cart = () => {
     const [cart, refetch] = useCart();
-    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    const axiosSecure = useAxiosSecure();
-    const handleDelete = (id) => {
+    const totalPrice = cart.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
+    
+    const handleDelete = (menuId) => {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -18,13 +17,23 @@ const Cart = () => {
             confirmButtonText: "Yes, delete it!"
           }).then((result) => {
             if (result.isConfirmed) {
-            axiosSecure.delete(`/cart/${id}`)
-            .then(res => {
-                if(res.data.deletedCount > 0) {
-                    refetch();
-                }
-            })
-            
+                // Remove item from localStorage
+                const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const updatedCart = currentCart.filter(item => item.menuId !== menuId);
+                localStorage.setItem('cart', JSON.stringify(updatedCart));
+                
+                // Dispatch event to notify other components (like NavBar)
+                window.dispatchEvent(new CustomEvent('cartUpdated'));
+                
+                refetch();
+                
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Item has been removed from cart.",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
             }
           });
     }
@@ -32,7 +41,7 @@ const Cart = () => {
         <div>
         <div className="flex justify-evenly items-center">
             <h1 className='text-4xl'>Items: {cart.length}</h1>
-            <h1 className='text-4xl'>Price: {totalPrice}</h1>
+            <h1 className='text-4xl'>Price: ${totalPrice.toFixed(2)}</h1>
             <button className="btn btn-primary">Pay</button> 
         </div>
         <div className="overflow-x-auto">
@@ -46,12 +55,20 @@ const Cart = () => {
         <th>Image</th>
         <th>Name</th>
         <th>Price</th>
+        <th>Quantity</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
       {
-        cart.map((item, index) => <tr key={item._id}>
+        cart.length === 0 ? (
+          <tr>
+            <td colSpan="6" className="text-center py-8">
+              <p className="text-gray-500">Your cart is empty</p>
+            </td>
+          </tr>
+        ) : (
+          cart.map((item, index) => <tr key={item.menuId || item._id}>
             <th>
               {index + 1}
             </th>
@@ -61,10 +78,9 @@ const Cart = () => {
                   <div className="mask mask-squircle h-12 w-12">
                     <img
                       src={item.image}
-                      alt="Avatar Tailwind CSS Component" />
+                      alt={item.name} />
                   </div>
                 </div>
-                
               </div>
             </td>
             <td>
@@ -73,19 +89,20 @@ const Cart = () => {
             <td>
               ${item.price}
             </td>
+            <td>
+              {item.quantity || 1}
+            </td>
             <th>
               <button
-              onClick={() => handleDelete(item._id)}
+              onClick={() => handleDelete(item.menuId || item._id)}
               className="btn btn-ghost btn-xs btn-lg">
                 <FaTrashAlt className="text-red-500"></FaTrashAlt>
               </button>
             </th>
           </tr>)
+        )
       }
-      
-      
     </tbody>
-    
   </table>
 </div>
         </div>

@@ -1,33 +1,17 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import { FaShoppingCart } from 'react-icons/fa';
 import useCart from "../../../hooks/useCart";
-import { useQueryClient } from '@tanstack/react-query';
-
-
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
-  const [cart, refetch] = useCart();
-  const queryClient = useQueryClient();
-
-  // Invalidate cart cache when user changes
-  useEffect(() => {
-    console.log('User changed to:', user?.email);
-    queryClient.invalidateQueries(['cart']);
-    if (user?.email) {
-      refetch();
-    }
-  }, [user?.email, queryClient, refetch]);
+  const [cart] = useCart();
 
   const handleLogout = () => {
     logOut()
       .then(() => {
         console.log("User logged out");
-        // Clear all cart cache when user logs out
-        queryClient.removeQueries(['cart']);
-        queryClient.clear();
       })
       .catch((error) => {
         console.log(error);
@@ -52,7 +36,9 @@ const NavBar = () => {
         <Link to="/dashboard/cart">
           <button className="flex items-center gap-2">
             <FaShoppingCart className="text-base" />
-            <div className="badge badge-sm badge-secondary">+{cart.length}</div>
+            {cart.length > 0 && (
+              <div className="badge badge-sm badge-secondary">+{cart.length}</div>
+            )}
           </button>
         </Link>
       </li>
