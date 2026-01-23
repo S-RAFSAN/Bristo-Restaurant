@@ -16,15 +16,23 @@ const useMenu = () => {
   //   })
   // }, [])      
   
-  const { data: menu = [], isPending: loading, refetch } = useQuery({
+  const { data: menu = [], isPending: loading, refetch, error } = useQuery({
     queryKey: ["menu"],
     queryFn: async () => {
       const res = await axiosPublic.get('/menu');
       return res.data;
     },
+    retry: 1,
+    retryDelay: 1000,
   });
 
-    return [menu, loading, refetch]
+  // Log errors for debugging
+  if (error) {
+    console.error('Menu fetch error:', error);
+    console.error('API URL:', axiosPublic.defaults.baseURL);
+  }
+
+    return [menu, loading, refetch, error]
 
 }
 

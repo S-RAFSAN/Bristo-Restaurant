@@ -69,7 +69,11 @@ const router = createBrowserRouter([
       {
         path: 'updateItem/:id',
         element: <AdminRoutes><UpdateItem></UpdateItem></AdminRoutes>,
-        loader: ({params}) => fetch(`http://localhost:5000/menu/${params.id}`),
+        loader: ({params}) => {
+          const baseURL = import.meta.env.VITE_API_URL || 
+            (import.meta.env.PROD ? "https://bistro-boss-server-virid-three.vercel.app" : "http://localhost:5000");
+          return fetch(`${baseURL}/menu/${params.id}`);
+        },
       },
       {
         path: 'users',

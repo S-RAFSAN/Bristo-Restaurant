@@ -3,8 +3,22 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import { useEffect } from "react";
 
+// Use environment variable, or detect production and use production backend, or fallback to localhost
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // If deployed to Vercel (production), use production backend
+  // import.meta.env.PROD is true when built for production
+  if (import.meta.env.PROD) {
+    return "https://bistro-boss-server-virid-three.vercel.app";
+  }
+  // For development, use localhost
+  return "http://localhost:5000";
+};
+
 const axiosSecure = axios.create({
-    baseURL: 'http://localhost:5000', // Updated to Firebase backend URL
+    baseURL: getBaseURL(),
 });
 
 const useAxiosSecure = () => {
