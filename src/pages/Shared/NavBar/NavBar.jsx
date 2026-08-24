@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import useCart from "../../../hooks/useCart";
 
 const NavBar = () => {
@@ -33,37 +33,19 @@ const NavBar = () => {
         <Link to="/secret">Secret</Link>
       </li>
       <li>
-        <Link to="/dashboard/cart">
-          <button className="flex items-center gap-2">
-            <FaShoppingCart className="text-base" />
-            {cart.length > 0 && (
-              <div className="badge badge-sm badge-secondary">+{cart.length}</div>
-            )}
-          </button>
+        <Link to="/dashboard/cart" className="flex items-center gap-2">
+          <FaShoppingCart className="text-base" />
+          {cart.length > 0 && (
+            <div className="badge badge-sm badge-secondary">+{cart.length}</div>
+          )}
         </Link>
       </li>
-      {user ? (
-        <>
-          {/* <li>
-        <span className="text-white font-medium uppercase"> {user?.displayName || user?.email}</span>
-      </li> */}
-          <li>
-            <button onClick={handleLogout}>Logout</button>
-          </li>
-        </>
-      ) : (
-        <>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-        </>
-      )}
     </>
   );
 
   return (
     <div>
-      <div className="navbar fixed z-10 bg-opacity-30 max-w-7xl mx-auto bg-black text-white  bg-base-100 shadow-sm">
+      <div className="navbar fixed z-10 max-w-7xl mx-auto bg-black bg-opacity-30 text-white shadow-sm">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -90,13 +72,31 @@ const NavBar = () => {
               {navOptions}
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">Bistro Boss</a>
+          <a className="btn btn-ghost hover:bg-transparent text-xl font-bold">
+            FeastHub
+          </a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{navOptions}</ul>
         </div>
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm md:btn-md rounded-full border border-white/40 bg-transparent text-white hover:border-white hover:bg-white hover:text-black"
+            >
+              <FaSignOutAlt />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="btn btn-sm md:btn-md rounded-full border-0 bg-amber-500 px-6 font-semibold text-black hover:bg-amber-400"
+            >
+              <FaUser />
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

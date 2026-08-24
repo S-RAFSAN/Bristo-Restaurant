@@ -72,7 +72,7 @@ const SignUp = () => {
   return (
     <>
       <Helmet>
-        <title>Bistro Boss | Sign up</title>
+        <title>FeastHub | Sign up</title>
       </Helmet>
         <div className="hero bg-base-200 min-h-screen">
           <div className="hero-content flex-col">

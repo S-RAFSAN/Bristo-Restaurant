@@ -23,6 +23,9 @@ const useMenu = () => {
         console.log('Fetching menu from:', axiosPublic.defaults.baseURL + '/menu');
         const res = await axiosPublic.get('/menu');
         console.log('Menu data received:', res.data);
+        if (!Array.isArray(res.data)) {
+          throw new Error(res.data?.error || 'Menu API did not return a list');
+        }
         return res.data;
       } catch (err) {
         console.error('Error in useMenu queryFn:', err);

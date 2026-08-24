@@ -6,7 +6,7 @@ import useMenu from "../../../hooks/useMenu";
 const PopularMenu = () => {
 
   const [menu, loading, refetch, error] = useMenu();
-  const popular = menu.filter((item) => item.category === "popular");
+  const popular = Array.isArray(menu) ? menu.filter((item) => item.category === "popular") : [];
 
   if (loading) {
     return (

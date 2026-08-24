@@ -12,16 +12,17 @@ import pizzaImg from '../../../assets/menu/pizza-bg.jpg'
 
 const Menu = () => {
   const [menu] = useMenu();
-  const desserts = menu.filter(item => item.category === 'dessert');
-  const soup = menu.filter(item => item.category === 'soup');
-  const salad = menu.filter(item => item.category === 'salad');
-  const pizza = menu.filter(item => item.category === 'pizza');
-  const offered = menu.filter(item => item.category === 'offered');
+  const items = Array.isArray(menu) ? menu : [];
+  const desserts = items.filter(item => item.category === 'dessert');
+  const soup = items.filter(item => item.category === 'soup');
+  const salad = items.filter(item => item.category === 'salad');
+  const pizza = items.filter(item => item.category === 'pizza');
+  const offered = items.filter(item => item.category === 'offered');
 
   return (
     <div>
       <Helmet>
-        <title>Bistro Boss | Menu</title>
+        <title>FeastHub | Menu</title>
       </Helmet>
       <Cover img={menuImg} title="Our Menu"></Cover>
       <SectionTitle subHeading="Don't miss" 

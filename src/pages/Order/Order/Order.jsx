@@ -15,13 +15,14 @@ const Order = () => {
   const initialIndex = catagories.indexOf(category);
   const [tabIndex, setTabIndex] = useState(initialIndex >= 0 ? initialIndex : 0);
   const [menu, loading, refetch, error] = useMenu();
+  const items = Array.isArray(menu) ? menu : [];
   
-  const offered = menu.filter((item) => item.category === "offered");
-  const desserts = menu.filter((item) => item.category === "dessert");
-  const pizza = menu.filter((item) => item.category === "pizza");
-  const salad = menu.filter((item) => item.category === "salad");
-  const soup = menu.filter((item) => item.category === "soup");
-  const drinks = menu.filter((item) => item.category === "drinks");
+  const offered = items.filter((item) => item.category === "offered");
+  const desserts = items.filter((item) => item.category === "dessert");
+  const pizza = items.filter((item) => item.category === "pizza");
+  const salad = items.filter((item) => item.category === "salad");
+  const soup = items.filter((item) => item.category === "soup");
+  const drinks = items.filter((item) => item.category === "drinks");
 
   if (loading) {
     return (
@@ -68,7 +69,7 @@ const Order = () => {
   return (
     <div>
       <Helmet>
-        <title>Bistro Boss | Order Food</title>
+        <title>FeastHub | Order Food</title>
       </Helmet>
       <Cover img={orderCover} title="Order"></Cover>
       <Tabs defaultIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
